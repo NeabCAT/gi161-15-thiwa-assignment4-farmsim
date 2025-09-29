@@ -12,9 +12,10 @@ public class Cow : Animals
         }
     }
 
-    public override void Init(string newName, int newHunger, int newhappiness)
+    public void InitCow(string name)
     {
-        base.Init(newName, newHunger, newhappiness);
+        base.Init(name, 50, 50);
+        PreferedFood = FoodType.Hay;
         Milk = 0f;
 
     }
@@ -35,4 +36,22 @@ public class Cow : Animals
         Debug.Log($"{Name} gives a lound MooMooMoo!! | Current Happiness : {Happiness} ");
     }
 
+    public override string Produce()
+    {
+        float totalMilk = 0f;
+
+        if (Happiness > 70)
+        {
+            totalMilk = (float)Happiness / 10;
+            Milk += totalMilk;
+            Debug.Log($"{Name} produced {totalMilk} units of milk, Total Milk: {Milk} units");
+            return $"{Name} produced {totalMilk} units of milk, Total Milk: {Milk} units";
+        }
+        else 
+        {
+            Debug.Log($"{Name} produced {totalMilk} units of milk, Total Milk: {Milk} units");
+            Milk += totalMilk;
+            return "Cow is not happy enough to produce milk";
+        }
+    }
 }

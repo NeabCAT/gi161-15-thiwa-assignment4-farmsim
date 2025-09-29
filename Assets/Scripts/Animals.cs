@@ -1,4 +1,13 @@
 using UnityEngine;
+public enum FoodType
+{
+    Hay,
+    Grain,
+    Clover,
+    RottenFood,
+    AnimalFood
+}
+
 
 public abstract class Animals : MonoBehaviour
 {
@@ -9,7 +18,7 @@ public abstract class Animals : MonoBehaviour
         private set => name = string.IsNullOrEmpty(value) ? "Unknown" : value;
     }
 
-    private int hunger;
+    /*private int hunger;
     public int Hunger //Property
     {
         get { return hunger; }
@@ -19,10 +28,18 @@ public abstract class Animals : MonoBehaviour
             else if (value < 0) hunger = 0;
             else hunger = value;
         }
-    }
+    }*/
 
-    private int happiness;
-    public int Happiness //Property
+
+    protected int maxHunger = 100;
+    public int Hunger { get; protected set; }
+
+
+
+    protected int maxHappiness = 100;
+    public int Happiness { get; protected set; }
+
+    /*public int Happiness //Property
     {
         get { return happiness; }
         private set
@@ -31,7 +48,10 @@ public abstract class Animals : MonoBehaviour
             else if (value < 0) happiness = 0;
             else happiness = value;
         }
-    }
+    }*/
+
+    public FoodType PreferedFood { get; protected set; }
+
 
     public virtual void Init(string newName, int newHunger, int newhappiness)
     {
@@ -42,37 +62,66 @@ public abstract class Animals : MonoBehaviour
 
     public void AdjustHunger(int amount)
     {
-        Hunger += amount;
+        Hunger = Mathf.Clamp(Hunger + amount, 0, maxHunger);
+        //Hunger *= amount;
     }
 
     public void AdjustHappiness(int valueHappy)
     {
-        Happiness += valueHappy;
+        Happiness = Mathf.Clamp(Happiness + valueHappy, 0, maxHappiness);
+        
+        //Happiness += valueHappy;
+
     }
 
-    public virtual void MakeSound()
+    /*public virtual void MakeSound()
     {
         Debug.Log($"{Name} say  ");
-    }
+    }*/
+
+    public abstract void MakeSound();
 
     public void Feed(int amount)
     {
         AdjustHunger(-amount);
-        AdjustHappiness(amount * 2);
-        Debug.Log($"{Name} was feed {amount} units of food. ");
+        AdjustHappiness(amount/2);
+        Debug.Log($"{Name} was fed {amount} units of generic food. Current Happiness: {Happiness} ");
 
     }
-    public void Feed(string food , int amount)
+    public void Feed(FoodType food , int amount)
     {
-        AdjustHunger(-amount);
+        if (food == FoodType.RottenFood)
+        {
+            int decreasedFood = 20;
+            AdjustHappiness(-decreasedFood);
+            Debug.Log($"{Name} was fed with rotten food  : {food}, Unhappy! Happiness decreased {decreasedFood} units,  Current Happiness: {Happiness} ");
+            return;
+        }
+
+        else if (food == FoodType.AnimalFood)
+        {
+            Feed(amount);
+            Debug.Log($"{Name} was fed with Animal food  : {food}, It's Ok! , Current Happiness: {Happiness} ");
+        }
+
+        if (food == PreferedFood) 
+        {
+            int increasedFood = 15;
+            AdjustHappiness(+increasedFood);
+            AdjustHunger(-amount);
+            Debug.Log($"{Name} was fed {amount} units of preferred food : {food}, Happiness Increased {increasedFood} units,  Current Happiness: {Happiness} ");
+            return;
+        }
+
+        /*AdjustHunger(-amount);
         AdjustHappiness(amount * 2);
-        Debug.Log($"{Name} was feed {amount} of {food}. ");
+        Debug.Log($"{Name} was feed {amount} of {food}. ");*/
 
     }
 
     public virtual void GetStatus()
     {
-        Debug.Log($"{Name} -> Hunger : {Hunger} | Happiness : {Happiness} ");
+        Debug.Log($"{Name} -> Hunger : {Hunger} | Happiness : {Happiness} | Prefered Food : {PreferedFood} ");
     }
 
     public void Sleep()
@@ -82,4 +131,6 @@ public abstract class Animals : MonoBehaviour
         Debug.Log($"{Name} slept and feels a little hungry, but very happy! ");
 
     }
+
+    public abstract string Produce();
 }

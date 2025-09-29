@@ -13,9 +13,10 @@ public class Sheep : Animals
         }
     }
 
-    public override void Init(string newName, int newHunger, int newhappiness)
+    public void InitSheep(string name)
     {
-        base.Init(newName, newHunger, newhappiness);
+        base.Init(name, 50, 50);
+        PreferedFood = FoodType.Clover;
         Wools = 0;
     }
 
@@ -31,4 +32,25 @@ public class Sheep : Animals
         base.GetStatus();
     }
 
+    public override string Produce()
+    {
+        int totalWool = 0;
+
+        if (Happiness >= 55)
+        {
+            totalWool = Happiness / 25;
+            Wools += totalWool;
+            Debug.Log($"{Name} produced {totalWool} pieces of wool, Total Wools: {Wools} pieces");
+            return $"{totalWool} pieces of wool";
+        }
+        else 
+        {
+            Wools += totalWool;
+            Debug.Log($"{Name} produced {totalWool} pieces of wool, Total Wools: {Wools} pieces");
+
+            return $"no pieces of wool";
+        }
+
+
+    }
 }
